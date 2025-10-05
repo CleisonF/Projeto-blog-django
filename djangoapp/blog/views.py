@@ -5,4 +5,3 @@ def index(request):
         request,
         'blog/pages/index.html'
     )
-# Create your views here.
