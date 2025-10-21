@@ -4,82 +4,99 @@
 <main class="main-content single-post section-wrapper">
   <div class="single-post-content section-content-narrow">
     <div class="single-post-gap section-gap">
-      <div class="single-post-cover pb-base">
-        <img loading="lazy" src="https://picsum.photos/1920/1080/?rand=12" alt="Change me">
-      </div>
 
+      {% if post.cover and post.cover_in_post_content %}
+        <div class="single-post-cover pb-base">
+          <img loading="lazy" src="{{ post.cover.url }}" alt="{{ post.title }}">
+        </div>
+      {% endif %}
       <h2 class="single-post-title pb-base center">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        {{ post.title }}
       </h2>
 
       <div class="post-meta pb-base">
         <div class="post-meta-item">
-          <a class="post-meta-link" href="#">
+          <a 
+            class="post-meta-link" 
+            href="{% url "blog:created_by" post.created_by.pk %}"
+          >
             <i class="fa-solid fa-user"></i>
             <span>
-              Author Full Name
+            {% if post.created_by.first_name %}
+              {{ post.created_by.first_name }}
+              {{ post.created_by.last_name }}
+            {% else %}
+              {{ post.created_by.username }}
+            {% endif %}
             </span>
           </a>
         </div>
         <div class="post-meta-item">
-          <a class="post-meta-link" href="#">
+          <span class="post-meta-link" >
             <i class="fa-solid fa-calendar-days"></i>
             <span>
-              20/04/2023
+              {{ post.created_at | date:"d/m/Y" }}
             </span>
           </a>
         </div>
-        <div class="post-meta-item">
-          <a class="post-meta-link" href="#">
-            <i class="fa-solid fa-tag"></i>
-            <span>
-              Categoria
-            </span>
-          </a>
-        </div>
+        {% if post.category %}
+          <div class="post-meta-item">
+            <a 
+              class="post-meta-link" 
+              href="{% url "blog:category" post.category.slug %}"
+            >
+              <i class="fa-solid fa-tag"></i>
+              <span>
+                {{post.category.name}}
+              </span>
+            </a>
+          </div>
+        {% endif %}
       </div>
 
       <p class="single-post-excerpt pb-base">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore, vero
-        fugiat eum perferendis accusamus enim quos obcaecati. Voluptates a vel
-        obcaecati ipsa in dignissimos facere odio et, ab provident assumenda!
+        {{ post.excerpt | safe }}
       </p>
 
       <div class="separator"></div>
 
       <div class="single-post-content">
-        {% include 'blog/partials/_temp.html' %} 
-      
-        <div class="post-tags">
-          <span>Tags: </span>
+      <div class="whatsapp-wrapper">
+    
+        {% with mensagem_fixa="Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20este%20post%3A%20" %}
 
-          <a class="post-tag-link" href="#">
-            <i class="fa-solid fa-link"></i>
-            <span>Testando</span>
-          </a>
-
-          <a class="post-tag-link" href="#">
-            <i class="fa-solid fa-link"></i>
-            <span>Atenção</span>
-          </a>
-
-          <a class="post-tag-link" href="#">
-            <i class="fa-solid fa-link"></i>
-            <span>Obrigado</span>
-          </a>
-
-          <a class="post-tag-link" href="#">
-            <i class="fa-solid fa-link"></i>
-            <span>Educação</span>
-          </a>
-
-          <a class="post-tag-link" href="#">
-            <i class="fa-solid fa-link"></i>
-            <span>Python</span>
-          </a>
-
-        </div>
+        {% with titulo_codificado=post.title|urlencode %}
         
+            <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ mensagem_fixa }}{{ titulo_codificado }}" 
+              target="_blank" 
+              class="whatsapp-link"
+              aria-label="Contate-nos pelo WhatsApp">
+                
+                <i class="fab fa-whatsapp"></i> 
+                
+                Para mais informações, contate no nosso WhatsApp!
+            </a>
+            
+        {% endwith %}
+        {% endwith %}
+
+        <p style="margin-top: var(--spacing-micro); font-size: var(--fs-smlst); color: var(--clr-gray-base);">
+            Clique no botão acima para iniciar uma conversa.
+        </p>
+      </div>
+      </div>
+        {{ post.content | safe }} 
+        {% if post.tags.exists %}
+          <div class="post-tags">
+            <span>Tags: </span>
+            {% for tag in post.tags.all %}
+              <a class="post-tag-link" href="{% url "blog:tag" tag.slug %}">
+                <i class="fa-solid fa-link"></i>
+                <span>{{ tag.name }}</span>
+              </a>         
+            {% endfor %}  
+          </div>
+        {% endif %}
       </div>
     
     </div>

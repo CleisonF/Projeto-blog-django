@@ -1,37 +1,54 @@
 :root {
-  /* Colors - Tema Afro Marrom */
+  /* ==================================== */
+  /* Colors - TEMA AFRO MARROM (HSL CORRIGIDO) */
+  /* ==================================== */
   --_clr-base-hue: 30; /* tom quente terroso */
-  --_clr-primary: var(--_clr-base-hue) 45%; /* marrom médio */
-  --_clr-gray: var(--_clr-base-hue) 20%; /* areia */
+  --_clr-primary-sat: 45%; /* Saturação principal (Marrom) */
+  --_clr-gray-sat: 20%; /* Saturação do cinza/areia */
 
+  /* Cores Base HSL (CORRIGIDO: usando hsl() ) */
+  --clr-whitest: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 100%);
+  --clr-white: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 99%);
+  --clr-black: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 2%);
 
-  --clr-whitest: var(--_clr-primary) 100%;
-  --clr-white: var(--_clr-primary) 99%;
-  --clr-black: var(--_clr-primary) 2%;
+  /* Paleta Primária (Marrom) */
+  --clr-primary-ltst: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 80%);
+  --clr-primary-ltr: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 70%);
+  --clr-primary-lt: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 60%);
+  --clr-primary-base: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 50%);
+  --clr-primary-dk: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 40%);
+  --clr-primary-dkr: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 30%);
+  --clr-primary-dkst: hsl(var(--_clr-base-hue), var(--_clr-primary-sat), 20%);
 
-  --clr-primary-ltst: var(--_clr-primary) 80%;
-  --clr-primary-ltr: var(--_clr-primary) 70%;
-  --clr-primary-lt: var(--_clr-primary) 60%;
-  --clr-primary-base: var(--_clr-primary) 50%;
-  --clr-primary-dk: var(--_clr-primary) 40%;
-  --clr-primary-dkr: var(--_clr-primary) 30%;
-  --clr-primary-dkst: var(--_clr-primary) 20%;
+  /* Paleta Cinza/Areia */
+  --clr-gray-ltst: hsl(var(--_clr-base-hue), var(--_clr-gray-sat), 90%);
+  --clr-gray-ltr: hsl(var(--_clr-base-hue), var(--_clr-gray-sat), 80%);
+  --clr-gray-lt: hsl(var(--_clr-base-hue), var(--_clr-gray-sat), 70%);
+  --clr-gray-base: hsl(var(--_clr-base-hue), var(--_clr-gray-sat), 50%);
+  --clr-gray-dk: hsl(var(--_clr-base-hue), var(--_clr-gray-sat), 30%);
+  --clr-gray-dkr: hsl(var(--_clr-base-hue), var(--_clr-gray-sat), 20%);
+  --clr-gray-dkst: hsl(var(--_clr-base-hue), var(--_clr-gray-sat), 10%);
 
-  --clr-gray-ltst: var(--_clr-gray) 90%;
-  --clr-gray-ltr: var(--_clr-gray) 80%;
-  --clr-gray-lt: var(--_clr-gray) 70%;
-  --clr-gray-base: var(--_clr-gray) 50%;
-  --clr-gray-dk: var(--_clr-gray) 30%;
-  --clr-gray-dkr: var(--_clr-gray) 20%;
-  --clr-gray-dkst: var(--_clr-gray) 10%;
+  /* NOVAS CORES (DOURADO E ROSA) - Toque de luxo Afro */
+  --clr-gold-hue: 45; 
+  --clr-gold-sat: 70%;
+  --clr-gold: hsl(var(--clr-gold-hue), var(--clr-gold-sat), 50%);
+  --clr-gold-dk: hsl(var(--clr-gold-hue), var(--clr-gold-sat), 35%); 
+  --clr-gold-ltst: hsl(var(--clr-gold-hue), var(--clr-gold-sat), 75%); 
 
-  /* Font-family */
-  --ff-regular: Georgia, 'Times New Roman', Times, serif;
-  --ff-headings: Georgia, 'Times New Roman', Times, serif;
+  --clr-rose-hue: 330; 
+  --clr-rose-sat: 55%;
+  --clr-rose: hsl(var(--clr-rose-hue), var(--clr-rose-sat), 65%);
+  --clr-rose-dk: hsl(var(--clr-rose-hue), var(--clr-rose-sat), 45%); 
+
+  /* ==================================== */
+  /* Font-family (MELHORADO - Elegante e Profissional) */
+  /* ==================================== */
+  --ff-regular: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  --ff-headings: 'Garamond', Georgia, serif; 
   --ff-mono: 'Courier New', Courier, monospace;
 
-  /* Font-Sizes */
-  /* https://royalfig.github.io/fluid-typography-calculator/ */
+  /* Font-Sizes (Ótimo uso de clamp) */
   --fs-smlst: clamp(1.2rem, 1.092307692307692rem + 0.256410256410256vw, 1.4rem);
   --fs-smlr: clamp(1.4rem, 1.292307692307692rem + 0.2564102564102566vw, 1.6rem);
   --fs-sm: clamp(1.6rem, 1.4923076923076923rem + 0.25641025641025633vw, 1.8rem);
@@ -76,8 +93,8 @@ html {
 }
 
 body {
-  background-color: hsl(var(--clr-white));
-  color: hsl(var(--clr-black));
+  background-color: var(--clr-white);
+  color: var(--clr-black);
   font-size: 20px; /* Fallback value */
   font-size: var(--fs-base);
   font-family: var(--ff-regular);
@@ -88,12 +105,12 @@ body {
 }
 
 a {
-  color: hsl(var(--clr-primary-base));
+  color: var(--clr-primary-base);
   text-decoration: none;
 }
 
 a:hover {
-  color: hsl(var(--clr-primary-dk));
+  color: var(--clr-primary-dk);
   text-decoration: underline;
 }
 
@@ -157,6 +174,14 @@ input[type='search']::-webkit-search-results-decoration {
   -webkit-appearance: none;
 }
 
+/* Imagens responsivas e centralizadas */
+img {
+  max-width: 100%;
+  height: auto; 
+  display: block; 
+  margin: 0 auto;
+}
+
 /* Blog */
 body,
 html,
@@ -196,12 +221,16 @@ html,
   padding-bottom: var(--spacing-base);
 }
 
+.mt-base {
+  margin-top: var(--spacing-base);
+}
+
 .center {
   text-align: center;
 }
 
 .separator {
-  background: hsl(var(--clr-gray-ltst));
+  background: var(--clr-gray-ltst);
   width: 50%;
   margin-inline: auto;
   height: 1px;
@@ -222,9 +251,28 @@ html,
 }
 
 /* Header */
-.blog-title,
+
+/* Título (Melhoria: DOURADO com Sombra ROSA) */
+.blog-title {
+  margin: 0;
+  font-family: var(--ff-headings); 
+  font-size: var(--fs-h1); 
+  color: var(--clr-gold); /* Texto Dourado */
+  text-shadow: 
+    2px 2px 0px var(--clr-rose-dk), /* Sombra rosa escura para profundidade */
+    4px 4px 5px rgba(0, 0, 0, 0.3); /* Sombra suave para destaque */
+  letter-spacing: 0.1em; 
+  text-transform: uppercase; 
+}
+
+/* Descrição (Melhoria: Em Rosa) */
 .blog-description {
   margin: 0;
+  /* Usando o cinza/areia base (tom terroso) que é mais neutro */
+  color: var(--clr-gray-base); 
+  font-size: var(--fs-smlr);
+  font-style: italic;
+  padding-top: var(--spacing-micro);
 }
 
 /* Menu */
@@ -260,7 +308,7 @@ html,
 .search-input {
   width: 100%;
   background-color: transparent;
-  border: 2px solid hsl(var(--clr-gray-ltr));
+  border: 2px solid var(--clr-gray-ltr);
   font-size: var(--fs-base);
   padding: var(--spacing-smlst);
   padding-inline-end: calc(var(--spacing-base) + var(--spacing-micro));
@@ -268,11 +316,11 @@ html,
   outline: none;
 }
 .search-input::placeholder {
-  color: hsl(var(--clr-gray-ltr));
+  color: var(--clr-gray-ltr);
 }
 
 .search-input:focus {
-  border: 2px solid hsl(var(--clr-primary-base));
+  border: 2px solid var(--clr-primary-base);
 }
 
 .search-btn {
@@ -287,17 +335,17 @@ html,
   background: transparent;
   font-size: var(--fs-base);
   padding-inline: var(--spacing-smlst);
-  color: hsl(var(--clr-gray-ltr));
+  color: var(--clr-gray-ltr);
 }
 
 .search-content:focus-within .search-btn {
-  color: hsl(var(--clr-primary-base));
+  color: var(--clr-primary-base);
 }
 
-/* Footer */
+/* Footer (Usando variáveis de cor corrigidas) */
 .footer {
-  background: hsl(25, 50%, 20%);
-  color: hsl(30, 30%, 90%);
+  background: var(--clr-primary-dkst); 
+  color: var(--clr-gray-lt); 
   text-align: center;
   padding: var(--spacing-base);
   font-size: var(--fs-smlr);
@@ -305,15 +353,14 @@ html,
 }
 
 .footer a {
-  color: hsl(30, 45%, 70%);
+  color: var(--clr-primary-ltr);
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .footer a:hover {
-  color: hsl(30, 60%, 85%);
+  color: var(--clr-primary-ltst);
 }
-
 
 .footer-columns {
   display: grid;
@@ -332,7 +379,7 @@ html,
 }
 
 .single-post-excerpt {
-  color: hsl(var(--clr-gray-base));
+  color: var(--clr-gray-base);
   font-size: var(--fs-bg);
   font-style: italic;
 }
@@ -351,7 +398,7 @@ html,
   gap: var(--spacing-micro);
   align-items: center;
   justify-content: center;
-  color: hsl(var(--clr-gray-base));
+  color: var(--clr-gray-base);
   text-decoration: none;
 }
 
@@ -369,12 +416,12 @@ html,
 
 .post-tags .post-tag-link,
 .post-tags .post-tag-link i {
-  color: hsl(var(--clr-gray-base));
+  color: var(--clr-gray-base);
 }
 
 .post-tags .post-tag-link:hover,
 .post-tags .post-tag-link:hover i {
-  color: hsl(var(--clr-primary-base));
+  color: var(--clr-primary-base);
   text-decoration: none;
 }
 
@@ -411,15 +458,15 @@ html,
 }
 
 .card {
-  border: 1px solid hsl(var(--clr-gray-ltst));
+  border: 1px solid var(--clr-gray-ltst);
   border-radius: var(--br-base);
-  box-shadow: 0 5px 5px hsl(var(--clr-black) / 0.1);
+  box-shadow: 0 5px 5px hsl(var(--clr-black) / 0.1); 
   transition: scale 300ms ease-in-out, box-shadow 300ms ease-in-out;
 }
 
 .card:hover {
   scale: 1.02;
-  box-shadow: 0 5px 15px hsl(var(--clr-black) / 0.3);
+  box-shadow: 0 5px 15px hsl(var(--clr-black) / 0.3); 
 }
 
 .card-text-wrapper {
@@ -474,4 +521,50 @@ html,
 
 .card-action-link:hover {
   text-decoration: none;
+}
+/* ==================================== */
+/* Whatsapp Button/Link */
+/* ==================================== */
+.whatsapp-link {
+  /* Propriedades do Flexbox para alinhar o ícone e o texto */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-micro); /* Espaço entre o ícone e o texto */
+  
+  /* Estilo do Botão */
+  background-color: #25D366; /* Cor oficial do WhatsApp */
+  color: var(--clr-white); /* Texto branco (usando white do seu tema) */
+  text-decoration: none;
+  font-weight: bold;
+  font-size: var(--fs-smlr);
+  padding: var(--spacing-smlst) var(--spacing-sm);
+  border-radius: 50px; /* Borda arredondada (formato 'pílula') */
+  margin: var(--spacing-base) auto; /* Centraliza e adiciona margem */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  
+  /* Garante que o texto dentro do link não tenha sublinhado */
+  text-decoration: none !important; 
+}
+
+/* Efeito Hover/Foco */
+.whatsapp-link:hover,
+.whatsapp-link:focus {
+  background-color: #128C7E; /* Cor do WhatsApp mais escura no hover */
+  transform: translateY(-2px); /* Efeito de 'levitação' sutil */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo do ícone (assumindo que você usará uma tag <i> ou um SVG) */
+.whatsapp-link i {
+    font-size: var(--fs-bg); /* Tamanho maior para o ícone */
+    color: var(--clr-white);
+}
+
+/* Para centralizar o link dentro do post */
+.whatsapp-wrapper {
+    text-align: center;
+    padding: var(--spacing-smlst) 0;
+    border-top: 1px solid var(--clr-gray-ltst);
+    border-bottom: 1px solid var(--clr-gray-ltst);
 }
