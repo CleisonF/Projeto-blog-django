@@ -4,25 +4,30 @@ from blog.models import Post, Page
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.views.generic import ListView
+
 
 PER_PAGE = 9
 
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/pages/index.html'
+    context_object_name = 'posts'
+    ordering = '-pk',
+    paginate_by = PER_PAGE
+    queryset = Post.objects.get_published()  # type: ignore
 
-def index(request):
-    posts = Post.objects.get_published() #type: ignore
 
-    paginator = Paginator(posts, PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    #def get_queryset(self):
+    #    return Post.objects.get_published()  # type: ignore
 
-    return render(
-        request,
-        'blog/pages/index.html',
-        {
-            'page_obj': page_obj,
-            'page_title': 'Home -',
-        }
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'page_title': 'Home - ',
+        })
+        return context
+
 
 def created_by(request, author_pk):
     user = User.objects.filter(pk=author_pk).first()
@@ -37,7 +42,7 @@ def created_by(request, author_pk):
     if user.first_name:
         user_full_name = f"{user.first_name} {user.last_name}"
     
-    page_title = user_full_name + 'posts -'
+    page_title = user_full_name + ' posts -'
 
 
     paginator = Paginator(posts, PER_PAGE)
@@ -53,53 +58,35 @@ def created_by(request, author_pk):
         }
     )
 
+class CategoryListView(PostListView):
+    allow_empty = False
 
-def category(request, slug):
-    posts = (Post.objects.get_published()#type: ignore
-        .filter(category__slug=slug)) 
-   
-    paginator = Paginator(posts, PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    def get_queryset(self):
+        slug = self.kwargs.get('slug')
+        return super().get_queryset().filter(category__slug=slug)
 
-    if len(posts) == 0:
-        raise Http404()
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        page_title = f'{self.object_list[0].category.name} - Categoria - ' #type: ignore
+        ctx.update({'page_title': page_title})
 
-    page_title = f'{page_obj[0].category.name} - Categoria - '
-
-    return render(
-        request,
-        'blog/pages/index.html',
-        {
-            'page_obj': page_obj,
-            'page_title': page_title,
-        }
-    )
+        return ctx
 
 
-def tag(request, slug):
-    posts = (Post.objects.get_published()#type: ignore
-        .filter(tags__slug=slug)) 
+class TagListView(PostListView):
+    allow_empty = False
 
-    paginator = Paginator(posts,PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    def get_queryset(self):
+        slug = self.kwargs.get('slug')
+        return super().get_queryset().filter(tags__slug=slug)
 
-    if len(posts) == 0:
-        raise Http404()
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        page_title = f'{self.object_list[0].tags.first().name} - ' #type: ignore
+        ctx.update({'page_title': page_title})
 
-    page_title = f'{page_obj[0].tags.first().name} - '
-
-
-    return render(
-        request,
-        'blog/pages/index.html',
-        {
-            'page_obj': page_obj,
-            'page_title': page_title,
-        }
-    )
-
+        return ctx
+    
 
 def search(request):
     search_value = request.GET.get('search', '').strip()
