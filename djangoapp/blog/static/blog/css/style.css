@@ -186,7 +186,7 @@ img {
 body,
 html,
 .blog-wrapper {
-  height: 100%;
+  min-height: 100vh;
 }
 
 .blog-wrapper {
@@ -350,6 +350,8 @@ html,
   padding: var(--spacing-base);
   font-size: var(--fs-smlr);
   letter-spacing: 0.5px;
+  position: relative;
+  z-index: 100;
 }
 
 .footer a {
@@ -369,6 +371,11 @@ html,
 }
 
 /* Single Post */
+.single-post-cover {
+  position: relative;
+  z-index: 1;
+}
+
 .single-post-content {
   padding-top: var(--spacing-smlst);
 }

@@ -47,9 +47,10 @@
       <div class="separator"></div>
 
       <div class="single-post-content">
+        {{ post.content | safe }}
       <div class="whatsapp-wrapper">
     
-        {% with mensagem_fixa="Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20este%20post%3A%20" %}
+        {% with mensagem_fixa="Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20este%20modelo%3A%20" %}
 
         {% with titulo_codificado=post.title|urlencode %}
         
@@ -71,7 +72,7 @@
         </p>
       </div>
       </div>
-        {{ post.content | safe }} 
+         
         {% if post.tags.exists %}
           <div class="post-tags">
             <span>Tags: </span>
