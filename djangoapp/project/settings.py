@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +28,7 @@ load_dotenv(BASE_DIR.parent / 'dotenv_files' / '.env', override=True)
 SECRET_KEY = 'django-insecure-h1b%jc7kvm+4-bjiqz)gov@d^&(9f!jz^#mfo1td@+e8=ji(k5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -96,16 +98,35 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'change-me'),
-        'NAME': os.getenv('POSTGRES_DB', 'change-me'),
-        'USER': os.getenv('POSTGRES_USER','change-me'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
-        'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
-        'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
+if not DEBUG:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600,
+        )
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
+
+
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': os.getenv('DB_ENGINE', 'change-me'),
+#        'NAME': os.getenv('POSTGRES_DB', 'change-me'),
+#        'USER': os.getenv('POSTGRES_USER','change-me'),
+#        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
+#        'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
+#        'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
+#    }
+#}
 
 
 # Password validation
@@ -144,6 +165,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = DATA_DIR /'static'
+
+STORAGES = {
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 
 MEDIA_URL = '/media/'
