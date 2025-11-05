@@ -224,17 +224,3 @@ AXES_FAILURE_LIMIT = 4
 AXES_COOLOFF_TIME = 1  # 1 hora
 AXES_RESET_ON_SUCCESS = True
 
-if not DEBUG and os.getenv('SUPERUSER_CREATED') != 'True':
-    try:
-        from django.contrib.auth.models import User
-        if not User.objects.filter(username='seu-admin-temp').exists():
-            print("Criando superusuário temporário...")
-            User.objects.create_superuser(
-                'admbraids',  # Nome de usuário
-                'faletacleison@gmail.com',  # Email
-                'Devop157' # Senha
-            )
-            os.environ['SUPERUSER_CREATED'] = 'True'
-            print("Superusuário temporário criado com sucesso.")
-    except Exception as e:
-        print(f"Tentativa de superuser falhou: {e}")
