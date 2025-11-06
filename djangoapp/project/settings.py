@@ -165,18 +165,54 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = DATA_DIR /'static'
 
-STORAGES = {
-    'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-    },
-    'default': {
-        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+if not DEBUG:
+    # 1. Adiciona 'storages'
+    INSTALLED_APPS += [
+        'storages',
+    ]
+    
+    # 2. Credenciais e Configurações de S3
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    
+    # SUA REGIÃO CORRETA: Leste dos EUA (Ohio)
+    AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'us-east-2') 
+    
+    # 📢 CRUCIAL: Impede o erro de ACLs, pois desabilitamos o ACL no Bucket
+    AWS_DEFAULT_ACL = None 
+    
+    # 3. Define o domínio e o local de armazenamento
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    
+    # URL pública base para suas mídias (aponta para o S3)
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+    
+    # 4. Define os Backends de Armazenamento
+    STORAGES = {
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+        # S3 como backend para arquivos de mídia (uploads)
+        'default': {
+            'BACKEND': 'storages.backends.s3.S3Storage',
+        }
     }
-}
-
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = DATA_DIR / 'media'
+    
+else:
+   
+    
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'mediafiles' # Garanta que esta pasta exista localmente
+    
+    STORAGES = {
+        'staticfiles': {
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+        },
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        }
+    }
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
