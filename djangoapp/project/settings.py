@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.staticfiles',
 
     # Apps
     "blog",
@@ -141,7 +142,7 @@ else:
         api_key=os.getenv("CLOUDINARY_API_KEY"),
         api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     )
-    
+
     DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
     MEDIA_URL = "/media/"
