@@ -13,250 +13,193 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR.parent / 'data' / 'web'
 
-#DOTENV
-load_dotenv(BASE_DIR.parent / 'dotenv_files' / '.env', override=True)
+# Load .env
+load_dotenv(BASE_DIR.parent / "dotenv_files" / ".env", override=True)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# Secret key
+SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h1b%jc7kvm+4-bjiqz)gov@d^&(9f!jz^#mfo1td@+e8=ji(k5'
+# Debug flag
+DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't')   
-
+# Allowed hosts
 ALLOWED_HOSTS = [
-    h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')
-    if h.strip()
+    h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()
 ]
 
-# Application definition
-
+# Apps
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 
-    # Meus apps
-    'blog',
-    'site_setup',
+    # Apps
+    "blog",
+    "site_setup",
 
     # Summernote
-    'django_summernote',
+    "django_summernote",
 
-    #  O Axes pode ser colocado em qualquer posição, mas é recomendado que seja o primeiro da lista.
-    'axes',
+    # Axes
+    "axes",
+
+    # Cloudinary
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
+# Middleware
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 
-    # AxesMiddleware runs during the reponse phase. It does not conflict
-    # with middleware that runs in the request phase like
-    # django.middleware.cache.FetchFromCacheMiddleware.
-    'axes.middleware.AxesMiddleware',
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    "axes.middleware.AxesMiddleware",
 ]
 
-ROOT_URLCONF = 'project.urls'
+ROOT_URLCONF = "project.urls"
 
+# Templates
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'site_setup.context_processors.context_processor_example',
-                'site_setup.context_processors.site_setup',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "site_setup.context_processors.context_processor_example",
+                "site_setup.context_processors.site_setup",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+WSGI_APPLICATION = "project.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-if not DEBUG:
+# ----------------------
+# DATABASE
+# ----------------------
+if DEBUG:
+    # Local
     DATABASES = {
-        'default': dj_database_url.config(
-            default=os.getenv('DATABASE_URL'),
-            conn_max_age=600,
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    # Render PostgreSQL
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600
         )
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+
+# ----------------------
+# STATIC & MEDIA
+# ----------------------
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+if DEBUG:
+    MEDIA_URL = "/"
+    MEDIA_ROOT = BASE_DIR / "mediafiles"
+
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
     }
 
+else:
+    # Cloudinary only for MEDIA
+    cloudinary.config(
+        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.getenv("CLOUDINARY_API_KEY"),
+        api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    )
 
+    MEDIA_URL = "/media/"
 
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+    }
 
-
-#DATABASES = {
-#    'default': {
-#        'ENGINE': os.getenv('DB_ENGINE', 'change-me'),
-#        'NAME': os.getenv('POSTGRES_DB', 'change-me'),
-#        'USER': os.getenv('POSTGRES_USER','change-me'),
-#        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
-#        'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
-#        'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
-#    }
-#}
-
-
+# ----------------------
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# ----------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'pt-br'
-
-TIME_ZONE = 'America/Sao_Paulo'
-
+# ----------------------
+# I18N
+# ----------------------
+LANGUAGE_CODE = "pt-br"
+TIME_ZONE = "America/Sao_Paulo"
 USE_I18N = True
-
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = DATA_DIR /'static'
-
-if not DEBUG:
-    # 1. Adiciona 'storages'
-    INSTALLED_APPS += [
-        'storages',
-    ]
-    
-    # 2. Credenciais e Configurações de S3
-    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-    
-    # SUA REGIÃO CORRETA: Leste dos EUA (Ohio)
-    AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'us-east-2') 
-    
-    # 📢 CRUCIAL: Impede o erro de ACLs, pois desabilitamos o ACL no Bucket
-    AWS_DEFAULT_ACL = None 
-    
-    # 3. Define o domínio e o local de armazenamento
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-    
-    # URL pública base para suas mídias (aponta para o S3)
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
-    
-    # 4. Define os Backends de Armazenamento
-    STORAGES = {
-        'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-        },
-        # S3 como backend para arquivos de mídia (uploads)
-        'default': {
-            'BACKEND': 'storages.backends.s3.S3Storage',
-        }
-    }
-    
-else:
-   
-    
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'mediafiles' # Garanta que esta pasta exista localmente
-    
-    STORAGES = {
-        'staticfiles': {
-            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
-        },
-        'default': {
-            'BACKEND': 'django.core.files.storage.FileSystemStorage',
-        }
-    }
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+# Axes
 AUTHENTICATION_BACKENDS = [
-    # AxesStandaloneBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
-    'axes.backends.AxesStandaloneBackend',
-
-    # Django ModelBackend is the default authentication backend.
-    'django.contrib.auth.backends.ModelBackend',
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
-
-
-SUMMERNOTE_CONFIG = {
-    'summernote': {
-        # Toolbar customization
-        # https://summernote.org/deep-dive/#custom-toolbar-popover
-        'toolbar': [
-            ['style', ['style', ]],
-            ['font', ['bold', 'italic', 'clear']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph', 'hr', ]],
-            ['table', ['table']],
-            ['insert', ['link', 'picture']],
-            ['view', ['fullscreen', 'codeview', 'undo', 'redo']],
-        ],
-        'codemirror': {
-            'mode': 'htmlmixed',
-            'lineNumbers': 'true',
-            'lineWrapping': 'true',
-            'theme': 'dracula',
-        },
-    },
-    'css': (
-        '//cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/dracula.min.css',
-    ),
-    'attachment_filesize_limit': 30 * 1024 * 1024,
-    'attachment_model': 'blog.PostAttachment',
-}
 
 AXES_ENABLED = True
 AXES_FAILURE_LIMIT = 4
-AXES_COOLOFF_TIME = 1  # 1 hora
+AXES_COOLOFF_TIME = 1  # hora
 AXES_RESET_ON_SUCCESS = True
 
+# Summernote
+SUMMERNOTE_CONFIG = {
+    "summernote": {
+        "toolbar": [
+            ["style", ["style"]],
+            ["font", ["bold", "italic", "clear"]],
+            ["color", ["color"]],
+            ["para", ["ul", "ol", "paragraph", "hr"]],
+            ["table", ["table"]],
+            ["insert", ["link", "picture"]],
+            ["view", ["fullscreen", "codeview", "undo", "redo"]],
+        ],
+    },
+    "css": (
+        "//cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/dracula.min.css",
+    ),
+    "attachment_filesize_limit": 30 * 1024 * 1024,
+    "attachment_model": "blog.PostAttachment",
+}
