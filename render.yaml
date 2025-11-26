@@ -2,9 +2,10 @@ services:
   - type: web
     name: Braids-Bymoon
     env: python
-    rootDir: .
-    buildCommand: pip install -r requirements.txt && python djangoapp/manage.py collectstatic --no-input
+    rootDir: djangoapp
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
     startCommand: gunicorn project.wsgi:application
+
 
     envVars:
       - key: DEBUG
