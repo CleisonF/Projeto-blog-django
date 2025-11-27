@@ -54,7 +54,7 @@
         {% with mensagem_fixa="Olá, gostaria de mais informações sobre este modelo: " %}
             
             {# O post.title JÁ ESTÁ SENDO CODIFICADO na variável titulo_codificado. #}
-            {% with titulo_codificado=post.title %}
+            {% with titulo_codificado=post.title|urlencode %}
             
                 {% with url_do_post_codificada=request.build_absolute_uri %}
                     
