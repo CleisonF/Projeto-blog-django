@@ -51,30 +51,36 @@
         {{ post.content | safe }}
       <div class="whatsapp-wrapper">
 
-        {% with mensagem_fixa="Olá, gostaria de mais informações sobre este modelo: " %}
-            
-            {# O post.title JÁ ESTÁ SENDO CODIFICADO na variável titulo_codificado. #}
-            {% with titulo_codificado=post.title %}
-            
-                {% with url_do_post_codificada=request.build_absolute_uri %}
-                    
-                    {# Corrigido: A estrutura do link. O WhatsApp precisa do texto completo codificado APÓS o 'text='#}
-                    {% with texto_completo=mensagem_fixa|add:titulo_codificado|add:"%0A%0A**Link da Postagem:** "|add:url_do_post_codificada|urlencode %}
-                        
-                        <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ texto_completo }}" 
-                            target="_blank" 
-                            class="whatsapp-link"
-                            aria-label="Contate-nos pelo WhatsApp">
-                            
-                            <i class="fab fa-whatsapp"></i> 
-                            
-                            Para mais informações, contate no nosso WhatsApp!
-                        </a>
-                    
-                    {% endwith %}
-                {% endwith %}
-            {% endwith %}
-        {% endwith %}
+      {% with mensagem_fixa="Olá, gostaria de mais informações sobre este modelo: " %}
+          
+          {# Use a variável sem o |urlencode. Ele será aplicado apenas no final. #}
+          {% with titulo_simples=post.title %} 
+          
+              {% with url_do_post_simples=request.build_absolute_uri %}
+                  
+                  {# CORREÇÃO APLICADA AQUI: Substituí "%0A%0A..." por "\n\n..." #}
+                  {% with texto_nao_codificado=mensagem_fixa|add:titulo_simples|add:"\n\n**Link da Postagem:** "|add:url_do_post_simples %}
+                      
+                      {# Apenas agora aplicamos o urlencode no texto completo. #}
+                      {% with texto_completo_codificado=texto_nao_codificado|urlencode %}
+                          
+                          <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ texto_completo_codificado }}" 
+                              target="_blank" 
+                              class="whatsapp-link"
+                              aria-label="Contate-nos pelo WhatsApp">
+                              
+                              <i class="fab fa-whatsapp"></i> 
+                              
+                              Para mais informações, contate no nosso WhatsApp!
+                          </a>
+                      
+                      {% endwith %}
+                  {% endwith %}
+              {% endwith %}
+          {% endwith %}
+      {% endwith %}
+
+</div>
 
         <p style="margin-top: var(--spacing-micro); font-size: var(--fs-smlst); color: var(--clr-gray-base);">
             Clique no botão acima para iniciar uma conversa.
