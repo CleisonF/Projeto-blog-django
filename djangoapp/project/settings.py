@@ -151,7 +151,7 @@ else:
 
     STORAGES = {
     "default": {
-        "BACKEND": "cloudinary_storage.storage.CloudinaryMediaStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
