@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from utils.images import resize_image
 from django_summernote.models import AbstractAttachment
 from django.urls import reverse
+from django.conf import settings
 
 
 class PostAttachment(AbstractAttachment):
@@ -18,7 +19,7 @@ class PostAttachment(AbstractAttachment):
         if self.file:
             file_changed = current_file_name != self.file.name
 
-        if file_changed:
+        if file_changed and not getattr(settings, 'USE_CLOUDINARY', False):
             resize_image(self.file, 900, True, 90) #Otimização de imagem.
         
         return super_save
@@ -160,7 +161,7 @@ class Post(models.Model):
         if self.cover:
             cover_changed = current_cover_name != self.cover.name
 
-        if cover_changed:
+        if cover_changed and not getattr(settings, 'USE_CLOUDINARY', False):
             resize_image(self.cover, 900, True, 90) #Otimização de imagem.
         
         return super_save

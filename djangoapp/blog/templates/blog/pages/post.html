@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %} 
+{% load cloudinary %}
 
 {% block content %}
 <main class="main-content single-post section-wrapper">
@@ -7,7 +8,7 @@
 
       {% if post.cover and post.cover_in_post_content %}
         <div class="single-post-cover pb-base">
-          <img loading="lazy" src="{{ post.cover.url }}" alt="{{ post.title }}">
+          <img loading="lazy" src="{{ post.cover|cloudinary_url:'w_900,q_auto,f_auto' }}" alt="{{ post.title }}">
         </div>
       {% endif %}
       <h2 class="single-post-title pb-base center">
