@@ -53,19 +53,22 @@
     
         {% with mensagem_fixa="Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20este%20modelo%3A%20" %}
 
-        {% with titulo_codificado=post.title|urlencode %}
-        
-            <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ mensagem_fixa }}{{ titulo_codificado }}" 
-              target="_blank" 
-              class="whatsapp-link"
-              aria-label="Contate-nos pelo WhatsApp">
-                
-                <i class="fab fa-whatsapp"></i> 
-                
-                Para mais informações, contate no nosso WhatsApp!
-            </a>
+          {% with titulo_codificado=post.title|urlencode %}
+    
+            {% with url_do_post_codificada=request.build_absolute_uri|urlencode %}
             
-        {% endwith %}
+              <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ mensagem_fixa }}{{ titulo_codificado }}%0A%0A**Link%20da%20Postagem%3A**%20{{ url_do_post_codificada }}" 
+                  target="_blank" 
+                  class="whatsapp-link"
+                  aria-label="Contate-nos pelo WhatsApp">
+                  
+                  <i class="fab fa-whatsapp"></i> 
+                  
+                  Para mais informações, contate no nosso WhatsApp!
+              </a>
+            
+            {% endwith %}
+          {% endwith %}
         {% endwith %}
 
         <p style="margin-top: var(--spacing-micro); font-size: var(--fs-smlst); color: var(--clr-gray-base);">
