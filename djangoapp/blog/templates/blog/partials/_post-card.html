@@ -6,7 +6,7 @@
         <img 
           class="card-cover"
           loading="lazy"
-          src="{{ post.cover.url }}" 
+          src="{{ post.cover.url|cloudinary_url:'w_900,q_auto,f_auto' }}" 
           alt="Cover do post {{ post.title }}"
         >
       </a>
