@@ -122,7 +122,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 if DEBUG:
-    MEDIA_URL = "/"
+    MEDIA_URL = "/media/"
     MEDIA_ROOT = BASE_DIR / "mediafiles"
 
     STORAGES = {
