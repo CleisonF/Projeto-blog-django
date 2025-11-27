@@ -58,7 +58,7 @@
         
             {% with url_do_post_codificada=request.build_absolute_uri|urlencode %}
                 
-                {# Corrigido: A estrutura do link. O WhatsApp precisa do texto completo codificado APÓS o 'text=' #}
+                {# Corrigido: A estrutura do link. O WhatsApp precisa do texto completo codificado APÓS o 'text='  #}
                 {% with texto_completo=mensagem_fixa|add:titulo_codificado|add:"%0A%0A**Link da Postagem:** "|add:url_do_post_codificada %}
                     
                     <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ texto_completo }}" 
