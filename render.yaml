@@ -3,7 +3,7 @@ services:
     name: Braids-Bymoon
     env: python
    
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn project.wsgi:application
 
 
