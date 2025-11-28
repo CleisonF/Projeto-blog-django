@@ -49,28 +49,22 @@
 
       <div class="single-post-content">
         {{ post.content | safe }}
-      <div class="whatsapp-wrapper">
+      <div class="whatsapp-chat pb-base center">
 
-      {% with mensagem_fixa="Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20este%20modelo%3A%20" %}
-          {% with titulo_simples=post.title %}           
-              {% with url_do_post_simples=post.cover.url %}                                    
-                  {% with texto_nao_codificado=mensagem_fixa|add:titulo_simples|add:"\n\n**Link da Postagem:** "|add:url_do_post_simples %}
-                      {% with texto_completo_codificado=texto_nao_codificado %} 
-                          <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ post.title|urlencode }}" 
-                              target="_blank" 
-                              class="whatsapp-link"
-                              aria-label="Contate-nos pelo WhatsApp">
-                              
-                              <i class="fab fa-whatsapp"></i> 
-                              
-                              Para mais informações, contate no nosso WhatsApp!
-                          </a>
-                      
-                      {% endwith %}
-                  {% endwith %}
-              {% endwith %}
+ 
+          {% with chat_mensage="Olá, gostaria de mais informações sobre o post: "|add post.title %}           
+             
+              <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ chat_mensage|urlencode }}" 
+                  target="_blank" 
+                  class="whatsapp-link"
+                  aria-label="Contate-nos pelo WhatsApp">
+                  
+                  <i class="fab fa-whatsapp"></i> 
+                  
+                  Para mais informações, contate no nosso WhatsApp!
+              </a>                 
           {% endwith %}
-      {% endwith %}
+      
 
 </div>
 
