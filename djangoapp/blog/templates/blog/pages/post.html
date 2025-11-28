@@ -24,7 +24,7 @@
             <span>
               {{ post.created_at | date:"d/m/Y" }}
             </span>
-          </span>
+          </a>
         </div>
         {% if post.category %}
           <div class="post-meta-item">
@@ -49,22 +49,28 @@
 
       <div class="single-post-content">
         {{ post.content | safe }}
-      <div class="whatsapp-chat pb-base center">
+      <div class="whatsapp-wrapper">
 
- 
-          {% with chat_mensage="Olá, gostaria de mais informações sobre o post: "|add post.title %}           
-             
-              <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ chat_mensage|urlencode }}" 
-                  target="_blank" 
-                  class="whatsapp-link"
-                  aria-label="Contate-nos pelo WhatsApp">
-                  
-                  <i class="fab fa-whatsapp"></i> 
-                  
-                  Para mais informações, contate no nosso WhatsApp!
-              </a>                 
+      {% with mensagem_fixa="Olá, gostaria de mais informações sobre este modelo: " %}
+          {% with titulo_simples=post.title %}           
+              {% with url_do_post_simples=request.build_absolute_uri %}                                    
+                  {% with texto_nao_codificado=mensagem_fixa|add:titulo_simples|add:"\n\n**Link da Postagem:** "|add:url_do_post_simples %}
+                      {% with texto_completo_codificado=texto_nao_codificado|urlencode %} 
+                          <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ texto_completo_codificado }}" 
+                              target="_blank" 
+                              class="whatsapp-link"
+                              aria-label="Contate-nos pelo WhatsApp">
+                              
+                              <i class="fab fa-whatsapp"></i> 
+                              
+                              Para mais informações, contate no nosso WhatsApp!
+                          </a>
+                      
+                      {% endwith %}
+                  {% endwith %}
+              {% endwith %}
           {% endwith %}
-      
+      {% endwith %}
 
 </div>
 
