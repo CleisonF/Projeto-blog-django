@@ -56,7 +56,7 @@
           {% with texto_nao_codificado=mensagem_fixa|add:post.title|add:"%0A%0A*Link da Postagem:* "|add:request.build_absolute_uri %}
               {% with texto_completo_codificado=texto_nao_codificado|urlencode %} 
                   
-                  <a href="https://wa.me/message/557583427421?text={{ texto_completo_codificado }}" 
+                  <a href="https://wa.me/message/YELKYCQZVICZB1?text={{ texto_completo_codificado }}" 
                       target="_blank" 
                       class="whatsapp-link"
                       aria-label="Contate-nos pelo WhatsApp">
