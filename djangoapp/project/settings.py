@@ -21,7 +21,7 @@ import cloudinary.uploader
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env
-load_dotenv(BASE_DIR.parent / "dotenv_files" / ".env", override=True)
+#load_dotenv(BASE_DIR.parent / "dotenv_files" / ".env", override=True)
 
 # Secret key
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
@@ -30,9 +30,15 @@ SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
 
 # Allowed hosts
-ALLOWED_HOSTS = [
+"""ALLOWED_HOSTS = [
     h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()
-]
+]"""
+
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,braidsbymoon.pythonanywhere.com"
+).split(",")
+
 
 # Apps
 INSTALLED_APPS = [
@@ -98,7 +104,28 @@ WSGI_APPLICATION = "project.wsgi.application"
 # ----------------------
 # DATABASE
 # ----------------------
+
+sqlite = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
 if DEBUG:
+    DATABASES = sqlite
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+
+
+
+"""if DEBUG:
     # Local
     DATABASES = {
         "default": {
@@ -113,50 +140,45 @@ else:
             default=os.getenv("DATABASE_URL"),
             conn_max_age=600
         )
-    }
+    }"""
 
 # ----------------------
 # STATIC & MEDIA
 # ----------------------
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "static"
 
 USE_CLOUDINARY = not DEBUG
 
 
-if DEBUG:
-    MEDIA_URL = "/media/"
-    MEDIA_ROOT = BASE_DIR / "mediafiles"
 
-    STORAGES = {
-        "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        },
-        "default": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-        },
-    }
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
-else:
-    # Cloudinary only for MEDIA
+if USE_CLOUDINARY:
     cloudinary.config(
         cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
         api_key=os.getenv("CLOUDINARY_API_KEY"),
         api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     )
 
-    
-
-    MEDIA_URL = "/media/"
-
     STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 
 # ----------------------
